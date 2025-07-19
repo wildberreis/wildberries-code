@@ -1,14 +1,107 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Redirecting...</title>
-    <meta http-equiv="refresh" content="0; URL=https://google.com/">
-    <script>
-      window.location.href = "https://google.com/";
-    </script>
-  </head>
-  <body>
-    <p>Если редирект не сработал, <a href="https://google.com/">нажмите сюда</a>.</p>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <title>Подтвердите переход</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background: #f5f5f5;
+    }
+    .captcha-container {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .captcha-image {
+      width: 200px;
+      height: 200px;
+      margin: 20px auto;
+      cursor: pointer;
+      background: linear-gradient(45deg, #6a11cb, #2575fc);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .captcha-image:hover {
+      transform: scale(1.03);
+    }
+    .timer {
+      font-size: 24px;
+      margin: 20px 0;
+      color: #333;
+      display: none;
+    }
+    .error {
+      color: #ff4757;
+      margin: 10px 0;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="captcha-container">
+    <h2>Подтвердите, что вы не бот</h2>
+    <p>Нажмите на изображение для перехода</p>
+    
+    <div class="captcha-image" id="captchaBtn">
+      Нажмите здесь<br>для подтверждения
+    </div>
+    
+    <div class="timer" id="timer">
+      Перенаправление через: <span id="countdown">3</span> сек.
+    </div>
+    
+    <div class="error" id="error">
+      Подождите, пожалуйста!
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const captchaBtn = document.getElementById('captchaBtn');
+      const timer = document.getElementById('timer');
+      const countdown = document.getElementById('countdown');
+      const error = document.getElementById('error');
+      
+      // Зашифрованный URL в base64 (замените на свой!)
+      const encodedUrl = 'aHR0cHM6Ly9leGFtcGxlLmNvbS8=';
+      let clicked = false;
+      
+      captchaBtn.addEventListener('click', () => {
+        if (clicked) {
+          error.style.display = 'block';
+          return;
+        }
+        
+        clicked = true;
+        timer.style.display = 'block';
+        let seconds = 3;
+        
+        const countdownInterval = setInterval(() => {
+          seconds--;
+          countdown.textContent = seconds;
+          
+          if (seconds <= 0) {
+            clearInterval(countdownInterval);
+            // Декодируем и перенаправляем
+            const targetUrl = atob(encodedUrl);
+            window.location.href = targetUrl;
+          }
+        }, 1000);
+      });
+    });
+  </script>
+</body>
 </html>
